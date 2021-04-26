@@ -99,8 +99,8 @@ def readSave(dictionaryToSave):
     btA = {'size':(5,1), 'font':('Franklin Gothic Book', 8)}
 
     columnLeft = [
-        [sg.Text('  '), sg.Text('Porta serial', font=16), sg.Text('⬤', font=12, key='status', text_color='red')],
-        [sg.InputCombo(values=COMS,key='porta', default_value=getName(dictionaryToSave, 'COM'), **ic),sg.InputCombo(values=BAUD,key='baud', default_value=getName(dictionaryToSave, 'baudrate'), **ic)],
+        [sg.Text('  '), sg.Text('Status', font=12), sg.Text('⬤', font=12, key='status', text_color='red')],
+        [sg.InputCombo(values=COMS,key='port', default_value=getName(dictionaryToSave, 'COM'), **ic),sg.InputCombo(values=BAUD,key='baud', default_value=getName(dictionaryToSave, 'baudrate'), **ic)],
         [sg.Button(button_text='CONECTAR', **bt3),sg.Button(button_text='DESCONECTAR', **bt3)],
         [sg.Text('_'  * 20)],
         [sg.Text('      '), sg.Button(button_color=(sg.theme_background_color()), image_filename=resource_path('image_onoff.png'), image_subsample=2, border_width=0)],
@@ -139,7 +139,7 @@ def readSave(dictionaryToSave):
         #Botões
         if event == 'CONECTAR':
              try:
-                ser = serial.Serial(values['porta'], values['baud'])
+                ser = serial.Serial(values['port'], values['baud'])
                 sg.popup_ok('Conexão realizada com sucesso!', title='Conectado')
                 form['status'].Update(text_color='green')
              except:
@@ -147,10 +147,15 @@ def readSave(dictionaryToSave):
                 sg.popup_ok('A comunicação não pôde ser estabelecida!', title='Erro')
         elif event == 'Save':
             path = sg.popup_get_file('Please enter a file name', save_as=True, default_extension='.yaml', file_types=(('YAML file', '.yaml'),))
-            f = open(path, "w")
-            with open(path, 'w') as file:
-                documents = yaml.dump(dictionaryToSave, file)
-            f.close()
+            if path is not None:
+                f = open(path, "w")
+                with open(path, 'w') as file:
+                    documents = yaml.dump(dictionaryToSave, file)
+                f.close()
+                if sg.popup_yes_no('Do you want to make this file default?')=='Yes':
+                    defaultFile['default_YAML'] = path
+                    with open('default.yaml', 'w') as fp:
+                        yaml.dump(defaultFile, fp)
         else: 
             try:
                 if ser.isOpen():
@@ -274,7 +279,6 @@ def readSave(dictionaryToSave):
 
 def main(dictionary):
     """Main window"""    
-
     # ------ Menu Definition ------ #      
     menu_def = [['File', ['Open', 'Read and Save...']],
             ['Help', ['Tutorial','About']], ] 
@@ -289,9 +293,9 @@ def main(dictionary):
 
     layout = [
         [sg.Menu(menu_def, tearoff=True)],
-        [sg.Text('  '), sg.Text('Porta serial', font=16), sg.Text('⬤', font=12, key='status', text_color='red')],
-        [sg.InputCombo(values=COMS,key='porta', default_value=getName(dictionary, 'COM'), **ic),sg.InputCombo(values=BAUD,key='baud', default_value=getName(dictionary, 'baudrate'), **ic)],
-        [sg.Button(button_text='CONECTAR', **bt3),sg.Button(button_text='DESCONECTAR', **bt3)],
+        [sg.Text('  '), sg.Text('Communication status', font=10), sg.Text('⬤', font=12, key='status', text_color='red')],
+        [sg.InputCombo(values=COMS,key='port', default_value=getName(dictionary, 'COM'), **ic),sg.InputCombo(values=BAUD,key='baud', default_value=getName(dictionary, 'baudrate'), **ic)],
+        [sg.Button(button_text='CONNECT', **bt3),sg.Button(button_text='DISCONNECT', **bt3)],
         [sg.Text('_'  * 20)],
         [sg.Button(button_color=(sg.theme_background_color()), image_filename=resource_path('image_onoff.png'), image_subsample=2, border_width=0)],
         [sg.Button(button_text='HOME', **bt2),sg.Button('SOURCE', **bt2)],
@@ -320,31 +324,36 @@ def main(dictionary):
             form['-OUT-'].update(values['-IN-'])
 
         #Botões
-        if event == 'CONECTAR':
+        if event == 'CONNECT':
              try:
-                ser = serial.Serial(values['porta'], values['baud'])
+                ser = serial.Serial(values['port'], values['baud'])
                 ser.isOpen()
-                sg.popup_ok('Conexão realizada com sucesso!', title='Conectado')
+                sg.popup_ok('Communication established!', title='Conected')
                 form['status'].Update(text_color='green')
              except:
                 form['status'].Update(text_color='red')
-                sg.popup_ok('A comunicação não pôde ser estabelecida!', title='Erro')
+                sg.popup_ok('Communication cannot be established!', title='Error')
         elif event == 'Open':
             loadedFile = sg.popup_get_file('Please enter a file name')
-            try:
-                with open(loadedFile) as file:
-                    dictionary = yaml.load(file, Loader=yaml.FullLoader)
-                    form['porta'].Update()
-                    print(getName(dictionary, 'COM'))
-                    if sg.popup_yes_no('Use this file as default?')=="Yes":
-                        defaultFile['default_YAML'] = loadedFile
-                        with open('default.yaml', 'w') as fp:
-                            yaml.dump(defaultFile, fp)
-            except:
-                sg.popup_ok('Não foi possível abrir o arquivo!', title='Erro')
+            if loadedFile is not None:
+                try:
+                    with open(loadedFile) as file:
+                        if 'hexCodes' in yaml.load(file, Loader=yaml.FullLoader):
+                            dictionary = yaml.load(file, Loader=yaml.FullLoader)
+                            form['port'].Update()
+                            print(getName(dictionary, 'COM'))
+                            if sg.popup_yes_no('Do you want to make this file default?')=="Yes":
+                                defaultFile['default_YAML'] = loadedFile
+                                with open('default.yaml', 'w') as fp:
+                                    yaml.dump(defaultFile, fp)
+                        else:
+                            sg.popup_ok('Check file content!', title='Error')
+                except:
+                    sg.popup_ok('Não foi possível abrir o arquivo!', title='Error')
         elif event == 'Read and Save...':
             try:
                 ser.close()
+                form['status'].Update(text_color='red')
             except:
                 pass
             readSave(dictionary)
@@ -352,10 +361,10 @@ def main(dictionary):
             try:
                 if ser.isOpen():
                     form['status'].Update(text_color='green')
-                    if event == 'DESCONECTAR':
+                    if event == 'DISCONNECT':
                         try:
                             ser.close()
-                            sg.popup_ok('Conexão fechada com sucesso!', title='Desconectado')
+                            sg.popup_ok('Closed serial port!', title='Disconnected')
                             form['status'].Update(text_color='red')
                         except:
                             pass
@@ -462,19 +471,17 @@ def main(dictionary):
                         print('Pressed button LIGAR/DESLIGAR')
                         ser.write(stringFormatter(dictionary,'ON_OFF').encode())
                 else:
-                    sg.popup_ok('Não conectado!', title='Erro')
+                    sg.popup_ok('Disconnected!', title='Erro')
             except:
-                sg.popup_ok('Não conectado!', title='Erro')
+                sg.popup_ok('Disconnected!', title='Error')
     form.close()
 
 
+"""Try to read the default file, if it does not exist or the pointed YAML file does not exist, it loads some default hexcodes and writes to the default files"""
 try:
     defaultFile = readYAML('default.yaml')
 except:
     defaultFile['default_YAML'] = ""
-
-
-# Try to read the default file, if it does not exist or the pointed YAML file does not exist, it loads some default hexcodes and writes to the default files
 try:
     dictionary = readYAML(defaultFile['default_YAML'])
     print('Arquivo lido')
