@@ -41,6 +41,9 @@ red = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\red.p
 green = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\green.png'
 yellow = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\yellow.png'
 blue = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\blue.png'
+home = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\home.png'
+info = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\info.png'
+empty = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\empty.png'
 connect = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\connect.png'
 disconnect = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\disconnect.png'
 
@@ -80,23 +83,23 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-def stringFormatter(hex, iten):
+def stringFormatter(hex, item):
     """Formats the hexcodes to send via serial to the module"""
     try:
-        newstring = hex['hexCodes'][iten].replace(" ","")
+        newstring = hex['hexCodes'][item].replace(" ","")
         return newstring.replace("0x","\\") + '\\n'
     except:
         return ''
 
-def getName(dictionary, iten):
+def getName(dictionary, item):
     """Load config options from the dictionary"""
-    if dictionary['config'][iten] is None:
-        if iten=='COM':
+    if dictionary['config'][item] is None:
+        if item=='COM':
             return 'COM7'
         else:
             return '9600'
     else:
-        if iten=='COM':
+        if item=='COM':
             return dictionary['config']['COM']
         else:
             return dictionary['config']['baudrate']
@@ -112,20 +115,7 @@ def pretty(d, indent=0):
             text += ('\t' * (indent+1) + str(value))
     return text
 
-def receiveSerial2(ser, iten):
-    """Receive serial value, convert it to string and format"""
-    print('Comecei')
-    ser.flushInput()
-    time.sleep(.1)
-    bytes_ = ser.read(25)
-    print('Terminei')
-    text = str(bytes_)
-    text = text.replace('\'','')
-    text = text.replace('b','')
-    global received
-    received = text.replace('\\n','')
-
-def receiveSerial(ser, iten):
+def receiveSerial(ser, item):
     """Receive serial value, convert it to string and format"""
     ser.flushInput()
     time.sleep(.1)
@@ -134,7 +124,6 @@ def receiveSerial(ser, iten):
     text = text.replace('\'','')
     text = text.replace('b','')
     return text.replace('\\n','')
-
 
 def animation():
     while received is None:
@@ -154,7 +143,6 @@ def animation():
         icon = None)
         time.sleep(.1)
    
-
 def readSave(dictionaryToSave):
     """Form to load hexcodes and save them as YAML files"""
     # ------ Menu Definition ------ #      
@@ -177,6 +165,7 @@ def readSave(dictionaryToSave):
         [sg.Button(key='VOLUP', button_color=(sg.theme_background_color()), image_filename=resource_path(volup), image_subsample=1, border_width=0),sg.Button(key='CHUP', button_color=(sg.theme_background_color()), image_filename=resource_path(chup), image_subsample=1, border_width=0),sg.Button(key='UP', button_color=(sg.theme_background_color()), image_filename=resource_path(up), image_subsample=1, border_width=0),sg.Button(key='EXIT', button_color=(sg.theme_background_color()), image_filename=resource_path(exit), image_subsample=1, border_width=0)],
         [sg.Button(key='MUTE', button_color=(sg.theme_background_color()), image_filename=resource_path(mute), image_subsample=1, border_width=0),sg.Button(key='LEFT', button_color=(sg.theme_background_color()), image_filename=resource_path(left), image_subsample=1, border_width=0),sg.Button(key='OK', button_color=(sg.theme_background_color()), image_filename=resource_path(ok), image_subsample=1, border_width=0),sg.Button(key='RIGHT', button_color=(sg.theme_background_color()), image_filename=resource_path(right), image_subsample=1, border_width=0)],
         [sg.Button(key='VOLDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(voldown), image_subsample=1, border_width=0),sg.Button(key='CHDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(chdown), image_subsample=1, border_width=0),sg.Button(key='DOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(down), image_subsample=1, border_width=0),sg.Button(key='RETURN', button_color=(sg.theme_background_color()), image_filename=resource_path(returnButton), image_subsample=1, border_width=0)],
+        [sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=1, border_width=0),sg.Button(key='HOME', button_color=(sg.theme_background_color()), image_filename=resource_path(home), image_subsample=1, border_width=0),sg.Button(key='INFO', button_color=(sg.theme_background_color()), image_filename=resource_path(info), image_subsample=1, border_width=0),sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=1, border_width=0)],
         [sg.Button(key='RED', button_color=(sg.theme_background_color()), image_filename=resource_path(red), image_subsample=1, border_width=0),sg.Button(key='GREEN', button_color=(sg.theme_background_color()), image_filename=resource_path(green), image_subsample=1, border_width=0),sg.Button(key='YELLOW', button_color=(sg.theme_background_color()), image_filename=resource_path(yellow), image_subsample=1, border_width=0),sg.Button(key='BLUE', button_color=(sg.theme_background_color()), image_filename=resource_path(blue), image_subsample=1, border_width=0)]
     ]
 
@@ -336,6 +325,14 @@ def readSave(dictionaryToSave):
                     elif event == 'LANGUAGE':
                         print('Pressed button LANGUAGE')
                         dictionaryToSave['hexCodes']['LANGUAGE'] = receiveSerial(ser, 'LANGUAGE')
+                    elif event == 'HOME':
+                        print('Pressed button HOME')
+                        dictionaryToSave['hexCodes']['HOME'] = receiveSerial(ser, 'HOME')
+                    elif event == 'INFO':
+                        print('Pressed button INFO')
+                        dictionaryToSave['hexCodes']['INFO'] = receiveSerial(ser, 'INFO')
+                    elif event == 'EMPTY':
+                        print('Pressed button EMPTY')
                     else:
                         print('Pressed button ON/OFF')
                         dictionaryToSave['hexCodes']['ON_OFF'] = receiveSerial(ser, 'ON_OFF')
@@ -371,6 +368,7 @@ def main(dictionary):
         [sg.Button(key='VOLUP', button_color=(sg.theme_background_color()), image_filename=resource_path(volup), image_subsample=1, border_width=0),sg.Button(key='CHUP', button_color=(sg.theme_background_color()), image_filename=resource_path(chup), image_subsample=1, border_width=0),sg.Button(key='UP', button_color=(sg.theme_background_color()), image_filename=resource_path(up), image_subsample=1, border_width=0),sg.Button(key='EXIT', button_color=(sg.theme_background_color()), image_filename=resource_path(exit), image_subsample=1, border_width=0)],
         [sg.Button(key='MUTE', button_color=(sg.theme_background_color()), image_filename=resource_path(mute), image_subsample=1, border_width=0),sg.Button(key='LEFT', button_color=(sg.theme_background_color()), image_filename=resource_path(left), image_subsample=1, border_width=0),sg.Button(key='OK', button_color=(sg.theme_background_color()), image_filename=resource_path(ok), image_subsample=1, border_width=0),sg.Button(key='RIGHT', button_color=(sg.theme_background_color()), image_filename=resource_path(right), image_subsample=1, border_width=0)],
         [sg.Button(key='VOLDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(voldown), image_subsample=1, border_width=0),sg.Button(key='CHDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(chdown), image_subsample=1, border_width=0),sg.Button(key='DOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(down), image_subsample=1, border_width=0),sg.Button(key='RETURN', button_color=(sg.theme_background_color()), image_filename=resource_path(returnButton), image_subsample=1, border_width=0)],
+        [sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=1, border_width=0),sg.Button(key='HOME', button_color=(sg.theme_background_color()), image_filename=resource_path(home), image_subsample=1, border_width=0),sg.Button(key='INFO', button_color=(sg.theme_background_color()), image_filename=resource_path(info), image_subsample=1, border_width=0),sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=1, border_width=0)],
         [sg.Button(key='RED', button_color=(sg.theme_background_color()), image_filename=resource_path(red), image_subsample=1, border_width=0),sg.Button(key='GREEN', button_color=(sg.theme_background_color()), image_filename=resource_path(green), image_subsample=1, border_width=0),sg.Button(key='YELLOW', button_color=(sg.theme_background_color()), image_filename=resource_path(yellow), image_subsample=1, border_width=0),sg.Button(key='BLUE', button_color=(sg.theme_background_color()), image_filename=resource_path(blue), image_subsample=1, border_width=0)]
     ]
 
@@ -424,6 +422,8 @@ def main(dictionary):
                 pass
             readSave(dictionary)
         elif event=='About':
+            sg.popup_ok('Not implemented yet!')
+        elif event=='Tutorial':
             sg.popup_ok('Not implemented yet!')
         else: 
             try:
@@ -535,6 +535,14 @@ def main(dictionary):
                     elif event == 'LANGUAGE':
                         print('Pressed button LANGUAGE')
                         ser.write(stringFormatter(dictionary,'LANGUAGE').encode())
+                    elif event == 'HOME':
+                        print('Pressed button HOME')
+                        ser.write(stringFormatter(dictionary,'HOME').encode())
+                    elif event == 'INFO':
+                        print('Pressed button INFO')
+                        ser.write(stringFormatter(dictionary,'INFO').encode())
+                    elif event == 'EMPTY':
+                        print('Pressed button EMPTY')
                     else:
                         print('Pressed button ON/OFF')
                         ser.write(stringFormatter(dictionary,'ON_OFF').encode())
@@ -557,7 +565,7 @@ except:
     print('Arquivo não lido')
     dictionary = {'config': {'COM': 'COM 7', 'baudrate': 9600}, 'hexCodes': {'ON_OFF': '0xA1 0xF1 0x00 0xFF 0x1C', 'MUTE': '0xA1 0xF1 0x00 0xFF 0x08', 'HOME': '0xA1 0xF1 0x00 0xFF 0x08', 'MENU': '0xA1 0xF1 0x00 0xFF 0x49', 'Back': '0xA1 0xF1 0x00 0xFF 0x17', 'UP': '0xA1 0xF1 0x00 0xFF 0x1A', 'DOWN': '0xA1 0xF1 0x00 0xFF 0x48', 'RIGHT': '0xA1 0xF1 0x00 0xFF 0x07', 'LEFT': '0xA1 0xF1 0x00 0xFF 0x47', 'OK_INFO': '0xA1 0xF1 0x00 0xFF 0x06', 'ENTER': '0xA1 0xF1 0x00 0xFF 0x03', 'DEL': '0xA1 0xF1 0x00 0xFF 0x42', 'VOl_UP': '0xA1 0xF1 0x00 0xFF 0x4B', 'VOL_DOWN': '0xA1 0xF1 0x00 0xFF 0x4F', 'CHANNEL_UP': '0xA1 0xF1 0x00 0xFF 0x09', 'CHANNEL_DOWN': '0xA1 0xF1 0x00 0xFF 0x05', 1: '0xA1 0xF1 0x00 0xFF 0x54', 2: '0xA1 0xF1 0x00 0xFF 0x16', 3: '0xA1 0xF1 0x00 0xFF 0x15', 
     4: '0xA1 0xF1 0x00 0xFF 0x50', 5: '0xA1 0xF1 0x00 0xFF 0x12', 6: '0xA1 0xF1 0x00 0xFF 0x11', 7: '0xA1 0xF1 0x00 0xFF 0x4C', 8: '0xA1 0xF1 0x00 0xFF 0x0E', 9: '0xA1 0xF1 0x00 0xFF 0x0D', 0: '0xA1 0xF1 0x00 0xFF 0x0C', 'RED': '0xA1 0xF1 0x00 0xFF 0x01', 
-    'GREEN': '0xA1 0xF1 0x00 0xFF 0x5F', 'BLUE': '0xA1 0xF1 0x00 0xFF 0x19', 'YELLOW': '0xA1 0xF1 0x00 0xFF 0x58', 'SPACE': '0xA1 0xF1 0x00 0xFF 0x10', 'LANGUAGE': '0xA1 0xF1 0x00 0xFF 0x41', 'SEARCH': '0xA1 0xF1 0x00 0xFF 0x0A'}}
+    'GREEN': '0xA1 0xF1 0x00 0xFF 0x5F', 'BLUE': '0xA1 0xF1 0x00 0xFF 0x19', 'YELLOW': '0xA1 0xF1 0x00 0xFF 0x58', 'SPACE': '0xA1 0xF1 0x00 0xFF 0x10', 'INFO': '0xA1 0xF1 0x00 0xFF 0x06', 'LANGUAGE': '0xA1 0xF1 0x00 0xFF 0x41', 'SEARCH': '0xA1 0xF1 0x00 0xFF 0x0A'}}
     f = open('defaultControl.yaml', "w")
     with open('defaultControl.yaml', 'w') as file:
         documents = yaml.dump(dictionary, file)
