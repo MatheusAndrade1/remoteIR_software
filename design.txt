@@ -1,0 +1,202 @@
+
+def readSave(dictionaryToSave):
+    """Form to load hexcodes and save them as YAML files"""
+    # ------ Menu Definition ------ #      
+    menu_def = [['File',['Save']]
+    ] 
+
+    form = sg.Window('Controle remoto IR',  element_justification='c', location=(500,100), icon=resource_path('mackenzie.ico'))
+    bt = {'size':(5,1), 'font':('Franklin Gothic Book', 10), 'button_color':("black","#F8F8F8")}
+    bt2 = {'size':(10,1), 'font':('Franklin Gothic Book', 8), 'button_color':("black","#F8F8F8")}
+    bt3 = {'size':(12,1), 'font':('Franklin Gothic Book', 8), 'button_color':("black","#F8F8F8")}
+    bt4 = {'size':(6,2), 'font':('Franklin Gothic Book', 8), 'button_color':("black","#F8F8F8")}
+    ic = {'size':(8,1), 'font':('Franklin Gothic Book', 10)}
+    btA = {'size':(5,1), 'font':('Franklin Gothic Book', 8)}
+
+    columnLeft = [
+        [sg.Text('  '), sg.Text('Status', font=12), sg.Text('⬤', font=12, key='status', text_color='red')],
+        [sg.InputCombo(values=COMS,key='port', default_value=getName(dictionaryToSave, 'COM'), **ic),sg.InputCombo(values=BAUD,key='baud', default_value=getName(dictionaryToSave, 'baudrate'), **ic)],
+        [sg.Button(button_text='CONECTAR', **bt3),sg.Button(button_text='DESCONECTAR', **bt3)],
+        [sg.Text('_'  * 20)],
+        [sg.Text('      '), sg.Button(button_color=(sg.theme_background_color()), image_filename=resource_path('image_onoff.png'), image_subsample=2, border_width=0)],
+        [sg.Button(button_text='HOME', **bt2),sg.Button('SOURCE', **bt2)],
+        [sg.Button(button_text='MUTE', **bt2),sg.Button('SPACE', **bt2)],
+        [sg.Button(button_text='1', **bt),sg.Button(button_text='2', **bt),sg.Button(button_text='3', **bt)],
+        [sg.Button(button_text='4', **bt),sg.Button(button_text='5', **bt),sg.Button(button_text='6', **bt)],
+        [sg.Button(button_text='7', **bt),sg.Button(button_text='8', **bt),sg.Button(button_text='9', **bt)],
+        [sg.Text('          '),  sg.Button(button_text='0', **bt)],
+        [sg.Button(button_text='+', **bt4),sg.Button(button_text='DEL', **bt4),sg.Button(button_text='UP', **bt4)],
+        [sg.Button(button_text='-', **bt4),sg.Button(button_text='ENTER', **bt4),sg.Button(button_text='DOWN', **bt4)],
+        [sg.Button(button_text='RETURN', **bt2),sg.Button('EXIT', **bt2)],
+        [sg.Text('          '), sg.Button('^', **bt)],
+        [sg.Button(button_text='<', **bt),sg.Button(button_text='OK', **bt),sg.Button(button_text='>', **bt)],
+        [sg.Text('          '), sg.Button('v', **bt)],
+        [sg.Button(button_text='A', button_color=('white','#FF0000'), **btA),sg.Button(button_text='B', button_color=('white','#008000'), **btA),sg.Button(button_text='C', button_color=('white','#FFFF00'), **btA),sg.Button(button_text='D', button_color=('white','#0000FF'), **btA)],
+        [sg.Button(button_text='LANGUAGE', **bt2),sg.Button(button_text='SEARCH', **bt2)]
+    ]
+    columnRight = [
+        [sg.Text('Configuration file: ', font=14)],
+        [sg.Multiline(pretty(dictionaryToSave), size=(50, 35), font='4', background_color='white', text_color='black', key='archive')]
+    ]
+
+    layout = [
+        [sg.Menu(menu_def, tearoff=True)],
+        [sg.Column(columnLeft, justification='center', vertical_alignment='center'), sg.Column(columnRight)]
+    ]
+    window = form.Layout(layout)
+
+    while True:             # Event Loop
+        event, values = window.read()
+        if event == sg.WIN_CLOSED or event == 'Exit':
+            break
+        if event == 'Go':
+            form['-OUT-'].update(values['-IN-'])
+        #Botões
+        if event == 'CONECTAR':
+             try:
+                ser = serial.Serial(values['port'], values['baud'])
+                sg.popup_ok('Conexão realizada com sucesso!', title='Conectado')
+                form['status'].Update(text_color='green')
+             except:
+                form['status'].Update(text_color='red')
+                sg.popup_ok('A comunicação não pôde ser estabelecida!', title='Erro')
+        elif event == 'Save':
+            path = sg.popup_get_file('Please enter a file name', save_as=True, default_extension='.yaml', file_types=(('YAML file', '.yaml'),))
+            if path is not None:
+                f = open(path, "w")
+                with open(path, 'w') as file:
+                    documents = yaml.dump(dictionaryToSave, file)
+                f.close()
+                if sg.popup_yes_no('Do you want to make this file default?')=='Yes':
+                    defaultFile['default_YAML'] = path
+                    with open('default.yaml', 'w') as fp:
+                        yaml.dump(defaultFile, fp)
+        else: 
+            try:
+                if ser.isOpen():
+                    form['status'].Update(text_color='green')
+                    if event == 'DESCONECTAR':
+                        try:
+                            ser.close()
+                            sg.popup_ok('Conexão fechada com sucesso!', title='Desconectado')
+                            form['status'].Update(text_color='red')
+                        except:
+                            pass
+                    elif event == 'HOME':
+                        print('Pressed button HOME')
+
+                        #thread = threading.Thread(target = receiveSerial2(ser, 'HOME')).start()
+                        #thread2 = threading.Thread(target = animation).start()
+                        
+                        #if received is not None:
+                        #    dictionary['hexCodes']['HOME'] = received
+                       # received = None
+
+                        dictionaryToSave['hexCodes']['HOME'] = receiveSerial(ser, 'HOME')
+
+                    elif event == 'SOURCE':
+                        print('Pressed button SOURCE')
+                        dictionaryToSave['hexCodes']['SOURCE'] = receiveSerial(ser, 'SOURCE')
+                    elif event == 'MUTE':
+                        print('Pressed button MUTE')
+                        dictionaryToSave['hexCodes']['MUTE'] = receiveSerial(ser, 'MUTE')
+                    elif event == 'SPACE':
+                        print('Pressed button SPACE')
+                        dictionaryToSave['hexCodes']['SPACE'] = receiveSerial(ser, 'SPACE')
+                    elif event == '1':
+                        print('Pressed button 1')
+                        dictionaryToSave['hexCodes'][1] = receiveSerial(ser, '1')
+                    elif event == '2':
+                        print('Pressed button 2')
+                        dictionaryToSave['hexCodes'][2] = receiveSerial(ser, '2')
+                    elif event == '3':
+                        print('Pressed button 3')
+                        dictionaryToSave['hexCodes'][3] = receiveSerial(ser, '3')
+                    elif event == '4':
+                        print('Pressed button 4')
+                        dictionaryToSave['hexCodes'][4] = receiveSerial(ser, '4')
+                    elif event == '5':
+                        print('Pressed button 5')
+                        dictionaryToSave['hexCodes'][5] = receiveSerial(ser, '5')
+                    elif event == '6':
+                        print('Pressed button 6')
+                        dictionaryToSave['hexCodes'][6] = receiveSerial(ser, '6')
+                    elif event == '7':
+                        print('Pressed button 7')
+                        dictionaryToSave['hexCodes'][7] = receiveSerial(ser, '7')
+                    elif event == '8':
+                        print('Pressed button 8')
+                        dictionaryToSave['hexCodes'][8] = receiveSerial(ser, '8')
+                    elif event == '9':
+                        print('Pressed button 9')
+                        dictionaryToSave['hexCodes'][9] = receiveSerial(ser, '9')
+                    elif event == '0':
+                        print('Pressed button 0')
+                        dictionaryToSave['hexCodes'][0] = receiveSerial(ser, '0')
+                    elif event == '+':
+                        print('Pressed button +')
+                        dictionaryToSave['hexCodes']['+'] = receiveSerial(ser, '+')
+                    elif event == '-':
+                        print('Pressed button -')
+                        dictionaryToSave['hexCodes']['-'] = receiveSerial(ser, '-')
+                    elif event == 'DEL':
+                        print('Pressed button DEL')
+                        dictionaryToSave['hexCodes']['DEL'] = receiveSerial(ser, 'DEL')
+                    elif event == 'SEARCH':
+                        print('Pressed button SEARCH')
+                        dictionaryToSave['hexCodes']['SEARCH'] = receiveSerial(ser, 'SEARCH')
+                    elif event == 'UP':
+                        print('Pressed button UP')
+                        dictionaryToSave['hexCodes']['CHANNEL_UP'] = receiveSerial(ser, 'CHANNEL_UP')
+                    elif event == 'DOWN':
+                        print('Pressed button DOWN')
+                        dictionaryToSave['hexCodes']['CHANNEL_DOWN'] = receiveSerial(ser, 'CHANNEL_DOWN')
+                    elif event == 'RETURN':
+                        print('Pressed button RETURN')
+                        dictionaryToSave['hexCodes']['RETURN'] = receiveSerial(ser, 'RETURN')
+                    elif event == 'EXIT':
+                        print('Pressed button EXIT')
+                        dictionaryToSave['hexCodes']['EXIT'] = receiveSerial(ser, 'EXIT')
+                    elif event == 'ENTER':
+                        print('Pressed button ENTER')
+                        dictionaryToSave['hexCodes']['ENTER'] = receiveSerial(ser, 'ENTER')
+                    elif event == '^':
+                        print('Pressed button ^')
+                        dictionaryToSave['hexCodes']['UP'] = receiveSerial(ser, 'UP')
+                    elif event == '<':
+                        print('Pressed button <')
+                        dictionaryToSave['hexCodes']['LEFT'] = receiveSerial(ser, 'LEFT')
+                    elif event == 'OK':
+                        print('Pressed button OK')
+                        dictionaryToSave['hexCodes']['OK_INFO'] = receiveSerial(ser, 'OK_INFO')
+                    elif event == '>':
+                        print('Pressed button >')
+                        dictionaryToSave['hexCodes']['RIGHT'] = receiveSerial(ser, 'RIGHT')
+                    elif event == 'v':
+                        print('Pressed button v')
+                        dictionaryToSave['hexCodes']['DOWN'] = receiveSerial(ser, 'DOWN')
+                    elif event == 'A':
+                        print('Pressed button RED')
+                        dictionaryToSave['hexCodes']['RED'] = receiveSerial(ser, 'RED')
+                    elif event == 'B':
+                        print('Pressed button GREEN')
+                        dictionaryToSave['hexCodes']['GREEN'] = receiveSerial(ser, 'GREEN')
+                    elif event == 'C':
+                        print('Pressed button YELLOW')
+                        dictionaryToSave['hexCodes']['YELLOW'] = receiveSerial(ser, 'YELLOW')
+                    elif event == 'D':
+                        print('Pressed button BLUE')
+                        dictionaryToSave['hexCodes']['BLUE'] = receiveSerial(ser, 'BLUE')
+                    elif event == 'LANGUAGE':
+                        print('Pressed button LANGUAGE')
+                        dictionaryToSave['hexCodes']['LANGUAGE'] = receiveSerial(ser, 'LANGUAGE')
+                    else:
+                        print('Pressed button LIGAR/DESLIGAR')
+                        dictionaryToSave['hexCodes']['ON_OFF'] = receiveSerial(ser, 'ON_OFF')
+                    
+                    #Refreshing Multiline box content
+                    form['archive'].Update(pretty(dictionaryToSave))
+                else:
+                    sg.popup_ok('Não conectado1!', title='Erro')
+            except:
+                sg.popup_ok('Não conectado2!', title='Erro')
