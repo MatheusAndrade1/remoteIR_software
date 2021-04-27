@@ -355,7 +355,7 @@ def main(dictionary):
 
     
     form = sg.Window('Controle remoto IR',  element_justification='c', location=(500,100), icon=resource_path('mackenzie.ico'))
-    bt = {'size':(12,1), 'font':('Franklin Gothic Book', 10), 'button_color':("black","#F8F8F8")}
+    #bt = {'size':(12,1), 'font':('Franklin Gothic Book', 10), 'button_color':("black","#F8F8F8")}
     ic = {'size':(12,1), 'font':('Franklin Gothic Book', 10)}
 
     column1 = [
@@ -403,8 +403,9 @@ def main(dictionary):
             if loadedFile is not None:
                 try:
                     with open(loadedFile) as file:
-                        if 'hexCodes' in yaml.load(file, Loader=yaml.FullLoader):
-                            dictionary = yaml.load(file, Loader=yaml.FullLoader)
+                        print(yaml.load(file, Loader=yaml.FullLoader))
+                        if 'hexCodes' in readYAML(loadedFile):
+                            dictionary = readYAML(loadedFile)
                             form['port'].Update()
                             print(getName(dictionary, 'COM'))
                             if sg.popup_yes_no('Do you want to make this file default?')=="Yes":
