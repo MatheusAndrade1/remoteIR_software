@@ -8,44 +8,45 @@ import time
 import threading
 
 
-image_icon = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\mackenzie.ico'
-onoff = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\on_off.png'
-number1 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number1.png'
-number2 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number2.png'
-number3 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number3.png'
-number4 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number4.png'
-number5 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number5.png'
-number6 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number6.png'
-number7 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number7.png'
-number8 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number8.png'
-number9 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number9.png'
-number0 = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\number0.png'
-source = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\source.png'
-language = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\language.png'
-space = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\space.png'
-delete = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\del.png'
-enter = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\enter.png'
-volup = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\volup.png'
-voldown = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\voldown.png'
-chup = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\chup.png'
-chdown = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\chdown.png'
-mute = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\mute.png'
-exit = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\exit.png'
-returnButton = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\return.png'
-ok = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\ok.png'
-up = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\up.png'
-down = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\down.png'
-left = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\left.png'
-right = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\right.png'
-red = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\red.png'
-green = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\green.png'
-yellow = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\yellow.png'
-blue = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\blue.png'
-home = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\home.png'
-info = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\info.png'
-empty = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\empty.png'
-connect = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\connect.png'
-disconnect = 'C:\\Users\\mathe\\Documents\\TV Digital\\remoteIR_software\\images\\disconnect.png'
+image_icon = 'mackenzie.ico'
+onoff = 'images\\on_off.png'
+number1 = 'images\\number1.png'
+number2 = 'images\\number2.png'
+number3 = 'images\\number3.png'
+number4 = 'images\\number4.png'
+number5 = 'images\\number5.png'
+number6 = 'images\\number6.png'
+number7 = 'images\\number7.png'
+number8 = 'images\\number8.png'
+number9 = 'images\\number9.png'
+number0 = 'images\\number0.png'
+source = 'images\\source.png'
+language = 'images\\language.png'
+space = 'images\\space.png'
+delete = 'images\\del.png'
+enter = 'images\\enter.png'
+volup = 'images\\volup.png'
+voldown = 'images\\voldown.png'
+chup = 'images\\chup.png'
+chdown = 'images\\chdown.png'
+mute = 'images\\mute.png'
+exit = 'images\\exit.png'
+returnButton = 'images\\return.png'
+ok = 'images\\ok.png'
+up = 'images\\up.png'
+down = 'images\\down.png'
+left = 'images\\left.png'
+right = 'images\\right.png'
+red = 'images\\red.png'
+green = 'images\\green.png'
+yellow = 'images\\yellow.png'
+blue = 'images\\blue.png'
+home = 'images\\home.png'
+info = 'images\\info.png'
+empty = 'images\\empty.png'
+menu = 'images\\menu.png'
+connect = 'images\\connect.png'
+disconnect = 'images\\disconnect.png'
 
 
 sg.ChangeLookAndFeel('SystemDefault1')
@@ -86,8 +87,9 @@ def resource_path(relative_path):
 def stringFormatter(hex, item):
     """Formats the hexcodes to send via serial to the module"""
     try:
-        newstring = hex['hexCodes'][item].replace(" ","")
-        return newstring.replace("0x","\\") + '\\n'
+        newstring = hex['hexCodes'][item].replace("0x", "\\x") + "\n"
+        #newstring = newstring.replace('\xc2\xa0','')
+        return newstring.replace(" ","")
     except:
         return ''
 
@@ -156,17 +158,17 @@ def readSave(dictionaryToSave):
     columnLeft = [
         [sg.Text(' '  * 35), sg.Text('Status', font=12), sg.Text('⬤', font=12, key='status', text_color='red')],
         [sg.Text(' '  * 13), sg.InputCombo(values=COMS,key='port', default_value=getName(dictionaryToSave, 'COM'), **ic),sg.InputCombo(values=BAUD,key='baud', default_value=getName(dictionaryToSave, 'baudrate'), **ic)],
-        [sg.Text(' '  * 15), sg.Button(key='CONNECT', button_color=(sg.theme_background_color()), image_filename=resource_path(connect), image_subsample=1, border_width=0),sg.Button(key='DISCONNECT', button_color=(sg.theme_background_color()), image_filename=resource_path(disconnect), image_subsample=1, border_width=0)],
+        [sg.Text(' '  * 15), sg.Button(key='CONNECT', button_color=(sg.theme_background_color()), image_filename=resource_path(connect), image_subsample=2, border_width=0),sg.Button(key='DISCONNECT', button_color=(sg.theme_background_color()), image_filename=resource_path(disconnect), image_subsample=2, border_width=0)],
         [sg.Text('_'  * 50)],
-        [sg.Button(button_color=(sg.theme_background_color()), image_filename=resource_path(onoff), image_subsample=1, border_width=0),sg.Button(key='1', button_color=(sg.theme_background_color()), image_filename=resource_path(number1), image_subsample=1, border_width=0),sg.Button(key='2', button_color=(sg.theme_background_color()), image_filename=resource_path(number2), image_subsample=1, border_width=0),sg.Button(key='3', button_color=(sg.theme_background_color()), image_filename=resource_path(number3), image_subsample=1, border_width=0)],
-        [sg.Button(key='SOURCE', button_color=(sg.theme_background_color()), image_filename=resource_path(source), image_subsample=1, border_width=0),sg.Button(key='4', button_color=(sg.theme_background_color()), image_filename=resource_path(number4), image_subsample=1, border_width=0),sg.Button(key='5', button_color=(sg.theme_background_color()), image_filename=resource_path(number5), image_subsample=1, border_width=0),sg.Button(key='6', button_color=(sg.theme_background_color()), image_filename=resource_path(number6), image_subsample=1, border_width=0)],
-        [sg.Button(key='LANGUAGE', button_color=(sg.theme_background_color()), image_filename=resource_path(language), image_subsample=1, border_width=0),sg.Button(key='7', button_color=(sg.theme_background_color()), image_filename=resource_path(number7), image_subsample=1, border_width=0),sg.Button(key='8', button_color=(sg.theme_background_color()), image_filename=resource_path(number8), image_subsample=1, border_width=0),sg.Button(key='9', button_color=(sg.theme_background_color()), image_filename=resource_path(number9), image_subsample=1, border_width=0)],
-        [sg.Button(key='SPACE', button_color=(sg.theme_background_color()), image_filename=resource_path(space), image_subsample=1, border_width=0),sg.Button(key='DEL', button_color=(sg.theme_background_color()), image_filename=resource_path(delete), image_subsample=1, border_width=0),sg.Button(key='0', button_color=(sg.theme_background_color()), image_filename=resource_path(number0), image_subsample=1, border_width=0),sg.Button(key='ENTER', button_color=(sg.theme_background_color()), image_filename=resource_path(enter), image_subsample=1, border_width=0)],
-        [sg.Button(key='VOLUP', button_color=(sg.theme_background_color()), image_filename=resource_path(volup), image_subsample=1, border_width=0),sg.Button(key='CHUP', button_color=(sg.theme_background_color()), image_filename=resource_path(chup), image_subsample=1, border_width=0),sg.Button(key='UP', button_color=(sg.theme_background_color()), image_filename=resource_path(up), image_subsample=1, border_width=0),sg.Button(key='EXIT', button_color=(sg.theme_background_color()), image_filename=resource_path(exit), image_subsample=1, border_width=0)],
-        [sg.Button(key='MUTE', button_color=(sg.theme_background_color()), image_filename=resource_path(mute), image_subsample=1, border_width=0),sg.Button(key='LEFT', button_color=(sg.theme_background_color()), image_filename=resource_path(left), image_subsample=1, border_width=0),sg.Button(key='OK', button_color=(sg.theme_background_color()), image_filename=resource_path(ok), image_subsample=1, border_width=0),sg.Button(key='RIGHT', button_color=(sg.theme_background_color()), image_filename=resource_path(right), image_subsample=1, border_width=0)],
-        [sg.Button(key='VOLDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(voldown), image_subsample=1, border_width=0),sg.Button(key='CHDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(chdown), image_subsample=1, border_width=0),sg.Button(key='DOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(down), image_subsample=1, border_width=0),sg.Button(key='RETURN', button_color=(sg.theme_background_color()), image_filename=resource_path(returnButton), image_subsample=1, border_width=0)],
-        [sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=1, border_width=0),sg.Button(key='HOME', button_color=(sg.theme_background_color()), image_filename=resource_path(home), image_subsample=1, border_width=0),sg.Button(key='INFO', button_color=(sg.theme_background_color()), image_filename=resource_path(info), image_subsample=1, border_width=0),sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=1, border_width=0)],
-        [sg.Button(key='RED', button_color=(sg.theme_background_color()), image_filename=resource_path(red), image_subsample=1, border_width=0),sg.Button(key='GREEN', button_color=(sg.theme_background_color()), image_filename=resource_path(green), image_subsample=1, border_width=0),sg.Button(key='YELLOW', button_color=(sg.theme_background_color()), image_filename=resource_path(yellow), image_subsample=1, border_width=0),sg.Button(key='BLUE', button_color=(sg.theme_background_color()), image_filename=resource_path(blue), image_subsample=1, border_width=0)]
+        [sg.Button(button_color=(sg.theme_background_color()), image_filename=resource_path(onoff), image_subsample=2, border_width=0),sg.Button(key='1', button_color=(sg.theme_background_color()), image_filename=resource_path(number1), image_subsample=2, border_width=0),sg.Button(key='2', button_color=(sg.theme_background_color()), image_filename=resource_path(number2), image_subsample=2, border_width=0),sg.Button(key='3', button_color=(sg.theme_background_color()), image_filename=resource_path(number3), image_subsample=2, border_width=0)],
+        [sg.Button(key='SOURCE', button_color=(sg.theme_background_color()), image_filename=resource_path(source), image_subsample=2, border_width=0),sg.Button(key='4', button_color=(sg.theme_background_color()), image_filename=resource_path(number4), image_subsample=2, border_width=0),sg.Button(key='5', button_color=(sg.theme_background_color()), image_filename=resource_path(number5), image_subsample=2, border_width=0),sg.Button(key='6', button_color=(sg.theme_background_color()), image_filename=resource_path(number6), image_subsample=2, border_width=0)],
+        [sg.Button(key='LANGUAGE', button_color=(sg.theme_background_color()), image_filename=resource_path(language), image_subsample=2, border_width=0),sg.Button(key='7', button_color=(sg.theme_background_color()), image_filename=resource_path(number7), image_subsample=2, border_width=0),sg.Button(key='8', button_color=(sg.theme_background_color()), image_filename=resource_path(number8), image_subsample=2, border_width=0),sg.Button(key='9', button_color=(sg.theme_background_color()), image_filename=resource_path(number9), image_subsample=2, border_width=0)],
+        [sg.Button(key='SPACE', button_color=(sg.theme_background_color()), image_filename=resource_path(space), image_subsample=2, border_width=0),sg.Button(key='DEL', button_color=(sg.theme_background_color()), image_filename=resource_path(delete), image_subsample=2, border_width=0),sg.Button(key='0', button_color=(sg.theme_background_color()), image_filename=resource_path(number0), image_subsample=2, border_width=0),sg.Button(key='ENTER', button_color=(sg.theme_background_color()), image_filename=resource_path(enter), image_subsample=2, border_width=0)],
+        [sg.Button(key='VOLUP', button_color=(sg.theme_background_color()), image_filename=resource_path(volup), image_subsample=2, border_width=0),sg.Button(key='CHUP', button_color=(sg.theme_background_color()), image_filename=resource_path(chup), image_subsample=2, border_width=0),sg.Button(key='UP', button_color=(sg.theme_background_color()), image_filename=resource_path(up), image_subsample=2, border_width=0),sg.Button(key='EXIT', button_color=(sg.theme_background_color()), image_filename=resource_path(exit), image_subsample=2, border_width=0)],
+        [sg.Button(key='MUTE', button_color=(sg.theme_background_color()), image_filename=resource_path(mute), image_subsample=2, border_width=0),sg.Button(key='LEFT', button_color=(sg.theme_background_color()), image_filename=resource_path(left), image_subsample=2, border_width=0),sg.Button(key='OK', button_color=(sg.theme_background_color()), image_filename=resource_path(ok), image_subsample=2, border_width=0),sg.Button(key='RIGHT', button_color=(sg.theme_background_color()), image_filename=resource_path(right), image_subsample=2, border_width=0)],
+        [sg.Button(key='VOLDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(voldown), image_subsample=2, border_width=0),sg.Button(key='CHDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(chdown), image_subsample=2, border_width=0),sg.Button(key='DOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(down), image_subsample=2, border_width=0),sg.Button(key='RETURN', button_color=(sg.theme_background_color()), image_filename=resource_path(returnButton), image_subsample=2, border_width=0)],
+        [sg.Button(key='MENU', button_color=(sg.theme_background_color()), image_filename=resource_path(menu), image_subsample=2, border_width=0),sg.Button(key='HOME', button_color=(sg.theme_background_color()), image_filename=resource_path(home), image_subsample=2, border_width=0),sg.Button(key='INFO', button_color=(sg.theme_background_color()), image_filename=resource_path(info), image_subsample=2, border_width=0),sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=2, border_width=0)],
+        [sg.Button(key='RED', button_color=(sg.theme_background_color()), image_filename=resource_path(red), image_subsample=2, border_width=0),sg.Button(key='GREEN', button_color=(sg.theme_background_color()), image_filename=resource_path(green), image_subsample=2, border_width=0),sg.Button(key='YELLOW', button_color=(sg.theme_background_color()), image_filename=resource_path(yellow), image_subsample=2, border_width=0),sg.Button(key='BLUE', button_color=(sg.theme_background_color()), image_filename=resource_path(blue), image_subsample=2, border_width=0)]
     ]
 
     columnRight = [
@@ -303,7 +305,7 @@ def readSave(dictionaryToSave):
                         dictionaryToSave['hexCodes']['LEFT'] = receiveSerial(ser, 'LEFT')
                     elif event == 'OK':
                         print('Pressed button OK')
-                        dictionaryToSave['hexCodes']['OK_INFO'] = receiveSerial(ser, 'OK_INFO')
+                        dictionaryToSave['hexCodes']['OK'] = receiveSerial(ser, 'OK')
                     elif event == 'RIGHT':
                         print('Pressed button RIGHT')
                         dictionaryToSave['hexCodes']['RIGHT'] = receiveSerial(ser, 'RIGHT')
@@ -331,6 +333,9 @@ def readSave(dictionaryToSave):
                     elif event == 'INFO':
                         print('Pressed button INFO')
                         dictionaryToSave['hexCodes']['INFO'] = receiveSerial(ser, 'INFO')
+                    elif event == 'MENU':
+                        print('Pressed button MENU')
+                        dictionaryToSave['hexCodes']['MENU'] = receiveSerial(ser, 'MENU')
                     elif event == 'EMPTY':
                         print('Pressed button EMPTY')
                     else:
@@ -353,23 +358,23 @@ def main(dictionary):
     
     form = sg.Window('Controle remoto IR',  element_justification='c', location=(500,100), icon=resource_path('mackenzie.ico'))
     #bt = {'size':(12,1), 'font':('Franklin Gothic Book', 10), 'button_color':("black","#F8F8F8")}
-    ic = {'size':(12,1), 'font':('Franklin Gothic Book', 10)}
+    ic = {'size':(8,1), 'font':('Franklin Gothic Book', 10)}
 
     column1 = [
-        [sg.Text(' '  * 35), sg.Text('Status', font=12), sg.Text('⬤', font=12, key='status', text_color='red')],
-        [sg.Text(' '  * 13), sg.InputCombo(values=COMS,key='port', default_value=getName(dictionary, 'COM'), **ic),sg.InputCombo(values=BAUD,key='baud', default_value=getName(dictionary, 'baudrate'), **ic)],
+        [sg.Text(' '  * 12), sg.Text('Status', font=12), sg.Text('⬤', font=12, key='status', text_color='red')],
+        [sg.Text(' '  * 1), sg.InputCombo(values=COMS,key='port', default_value=getName(dictionary, 'COM'), **ic),sg.InputCombo(values=BAUD,key='baud', default_value=getName(dictionary, 'baudrate'), **ic)],
         #[sg.Text(' '  * 17), sg.Button(button_text='CONNECT', **bt),sg.Button(button_text='DISCONNECT', **bt)],
-        [sg.Text(' '  * 15), sg.Button(key='CONNECT', button_color=(sg.theme_background_color()), image_filename=resource_path(connect), image_subsample=1, border_width=0),sg.Button(key='DISCONNECT', button_color=(sg.theme_background_color()), image_filename=resource_path(disconnect), image_subsample=1, border_width=0)],
-        [sg.Text('_'  * 50)],
-        [sg.Button(button_color=(sg.theme_background_color()), image_filename=resource_path(onoff), image_subsample=1, border_width=0),sg.Button(key='1', button_color=(sg.theme_background_color()), image_filename=resource_path(number1), image_subsample=1, border_width=0),sg.Button(key='2', button_color=(sg.theme_background_color()), image_filename=resource_path(number2), image_subsample=1, border_width=0),sg.Button(key='3', button_color=(sg.theme_background_color()), image_filename=resource_path(number3), image_subsample=1, border_width=0)],
-        [sg.Button(key='SOURCE', button_color=(sg.theme_background_color()), image_filename=resource_path(source), image_subsample=1, border_width=0),sg.Button(key='4', button_color=(sg.theme_background_color()), image_filename=resource_path(number4), image_subsample=1, border_width=0),sg.Button(key='5', button_color=(sg.theme_background_color()), image_filename=resource_path(number5), image_subsample=1, border_width=0),sg.Button(key='6', button_color=(sg.theme_background_color()), image_filename=resource_path(number6), image_subsample=1, border_width=0)],
-        [sg.Button(key='LANGUAGE', button_color=(sg.theme_background_color()), image_filename=resource_path(language), image_subsample=1, border_width=0),sg.Button(key='7', button_color=(sg.theme_background_color()), image_filename=resource_path(number7), image_subsample=1, border_width=0),sg.Button(key='8', button_color=(sg.theme_background_color()), image_filename=resource_path(number8), image_subsample=1, border_width=0),sg.Button(key='9', button_color=(sg.theme_background_color()), image_filename=resource_path(number9), image_subsample=1, border_width=0)],
-        [sg.Button(key='SPACE', button_color=(sg.theme_background_color()), image_filename=resource_path(space), image_subsample=1, border_width=0),sg.Button(key='DEL', button_color=(sg.theme_background_color()), image_filename=resource_path(delete), image_subsample=1, border_width=0),sg.Button(key='0', button_color=(sg.theme_background_color()), image_filename=resource_path(number0), image_subsample=1, border_width=0),sg.Button(key='ENTER', button_color=(sg.theme_background_color()), image_filename=resource_path(enter), image_subsample=1, border_width=0)],
-        [sg.Button(key='VOLUP', button_color=(sg.theme_background_color()), image_filename=resource_path(volup), image_subsample=1, border_width=0),sg.Button(key='CHUP', button_color=(sg.theme_background_color()), image_filename=resource_path(chup), image_subsample=1, border_width=0),sg.Button(key='UP', button_color=(sg.theme_background_color()), image_filename=resource_path(up), image_subsample=1, border_width=0),sg.Button(key='EXIT', button_color=(sg.theme_background_color()), image_filename=resource_path(exit), image_subsample=1, border_width=0)],
-        [sg.Button(key='MUTE', button_color=(sg.theme_background_color()), image_filename=resource_path(mute), image_subsample=1, border_width=0),sg.Button(key='LEFT', button_color=(sg.theme_background_color()), image_filename=resource_path(left), image_subsample=1, border_width=0),sg.Button(key='OK', button_color=(sg.theme_background_color()), image_filename=resource_path(ok), image_subsample=1, border_width=0),sg.Button(key='RIGHT', button_color=(sg.theme_background_color()), image_filename=resource_path(right), image_subsample=1, border_width=0)],
-        [sg.Button(key='VOLDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(voldown), image_subsample=1, border_width=0),sg.Button(key='CHDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(chdown), image_subsample=1, border_width=0),sg.Button(key='DOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(down), image_subsample=1, border_width=0),sg.Button(key='RETURN', button_color=(sg.theme_background_color()), image_filename=resource_path(returnButton), image_subsample=1, border_width=0)],
-        [sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=1, border_width=0),sg.Button(key='HOME', button_color=(sg.theme_background_color()), image_filename=resource_path(home), image_subsample=1, border_width=0),sg.Button(key='INFO', button_color=(sg.theme_background_color()), image_filename=resource_path(info), image_subsample=1, border_width=0),sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=1, border_width=0)],
-        [sg.Button(key='RED', button_color=(sg.theme_background_color()), image_filename=resource_path(red), image_subsample=1, border_width=0),sg.Button(key='GREEN', button_color=(sg.theme_background_color()), image_filename=resource_path(green), image_subsample=1, border_width=0),sg.Button(key='YELLOW', button_color=(sg.theme_background_color()), image_filename=resource_path(yellow), image_subsample=1, border_width=0),sg.Button(key='BLUE', button_color=(sg.theme_background_color()), image_filename=resource_path(blue), image_subsample=1, border_width=0)]
+        [sg.Text(' '  * 8), sg.Button(key='CONNECT', button_color=(sg.theme_background_color()), image_filename=resource_path(connect), image_subsample=2, border_width=0),sg.Button(key='DISCONNECT', button_color=(sg.theme_background_color()), image_filename=resource_path(disconnect), image_subsample=2, border_width=0)],
+        [sg.Text('_'  * 28)],
+        [sg.Button(button_color=(sg.theme_background_color()), image_filename=resource_path(onoff), image_subsample=2, border_width=0),sg.Button(key='1', button_color=(sg.theme_background_color()), image_filename=resource_path(number1), image_subsample=2, border_width=0),sg.Button(key='2', button_color=(sg.theme_background_color()), image_filename=resource_path(number2), image_subsample=2, border_width=0),sg.Button(key='3', button_color=(sg.theme_background_color()), image_filename=resource_path(number3), image_subsample=2, border_width=0)],
+        [sg.Button(key='SOURCE', button_color=(sg.theme_background_color()), image_filename=resource_path(source), image_subsample=2, border_width=0),sg.Button(key='4', button_color=(sg.theme_background_color()), image_filename=resource_path(number4), image_subsample=2, border_width=0),sg.Button(key='5', button_color=(sg.theme_background_color()), image_filename=resource_path(number5), image_subsample=2, border_width=0),sg.Button(key='6', button_color=(sg.theme_background_color()), image_filename=resource_path(number6), image_subsample=2, border_width=0)],
+        [sg.Button(key='LANGUAGE', button_color=(sg.theme_background_color()), image_filename=resource_path(language), image_subsample=2, border_width=0),sg.Button(key='7', button_color=(sg.theme_background_color()), image_filename=resource_path(number7), image_subsample=2, border_width=0),sg.Button(key='8', button_color=(sg.theme_background_color()), image_filename=resource_path(number8), image_subsample=2, border_width=0),sg.Button(key='9', button_color=(sg.theme_background_color()), image_filename=resource_path(number9), image_subsample=2, border_width=0)],
+        [sg.Button(key='SPACE', button_color=(sg.theme_background_color()), image_filename=resource_path(space), image_subsample=2, border_width=0),sg.Button(key='DEL', button_color=(sg.theme_background_color()), image_filename=resource_path(delete), image_subsample=2, border_width=0),sg.Button(key='0', button_color=(sg.theme_background_color()), image_filename=resource_path(number0), image_subsample=2, border_width=0),sg.Button(key='ENTER', button_color=(sg.theme_background_color()), image_filename=resource_path(enter), image_subsample=2, border_width=0)],
+        [sg.Button(key='VOLUP', button_color=(sg.theme_background_color()), image_filename=resource_path(volup), image_subsample=2, border_width=0),sg.Button(key='CHUP', button_color=(sg.theme_background_color()), image_filename=resource_path(chup), image_subsample=2, border_width=0),sg.Button(key='UP', button_color=(sg.theme_background_color()), image_filename=resource_path(up), image_subsample=2, border_width=0),sg.Button(key='EXIT', button_color=(sg.theme_background_color()), image_filename=resource_path(exit), image_subsample=2, border_width=0)],
+        [sg.Button(key='MUTE', button_color=(sg.theme_background_color()), image_filename=resource_path(mute), image_subsample=2, border_width=0),sg.Button(key='LEFT', button_color=(sg.theme_background_color()), image_filename=resource_path(left), image_subsample=2, border_width=0),sg.Button(key='OK', button_color=(sg.theme_background_color()), image_filename=resource_path(ok), image_subsample=2, border_width=0),sg.Button(key='RIGHT', button_color=(sg.theme_background_color()), image_filename=resource_path(right), image_subsample=2, border_width=0)],
+        [sg.Button(key='VOLDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(voldown), image_subsample=2, border_width=0),sg.Button(key='CHDOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(chdown), image_subsample=2, border_width=0),sg.Button(key='DOWN', button_color=(sg.theme_background_color()), image_filename=resource_path(down), image_subsample=2, border_width=0),sg.Button(key='RETURN', button_color=(sg.theme_background_color()), image_filename=resource_path(returnButton), image_subsample=2, border_width=0)],
+        [sg.Button(key='MENU', button_color=(sg.theme_background_color()), image_filename=resource_path(menu), image_subsample=2, border_width=0),sg.Button(key='HOME', button_color=(sg.theme_background_color()), image_filename=resource_path(home), image_subsample=2, border_width=0),sg.Button(key='INFO', button_color=(sg.theme_background_color()), image_filename=resource_path(info), image_subsample=2, border_width=0),sg.Button(key='EMPTY', button_color=(sg.theme_background_color()), image_filename=resource_path(empty), image_subsample=2, border_width=0)],
+        [sg.Button(key='RED', button_color=(sg.theme_background_color()), image_filename=resource_path(red), image_subsample=2, border_width=0),sg.Button(key='GREEN', button_color=(sg.theme_background_color()), image_filename=resource_path(green), image_subsample=2, border_width=0),sg.Button(key='YELLOW', button_color=(sg.theme_background_color()), image_filename=resource_path(yellow), image_subsample=2, border_width=0),sg.Button(key='BLUE', button_color=(sg.theme_background_color()), image_filename=resource_path(blue), image_subsample=2, border_width=0)]
     ]
 
     layout = [
@@ -381,6 +386,8 @@ def main(dictionary):
     while True:             # Event Loop
         event, values = window.read()
 
+        codeToSend=""
+
         if event == sg.WIN_CLOSED or event == 'Exit':
             break
         if event == 'Go':
@@ -389,6 +396,7 @@ def main(dictionary):
         #Botões
         if event == 'CONNECT':
              try:
+                print(values['port'])
                 ser = serial.Serial(values['port'], values['baud'])
                 ser.isOpen()
                 sg.popup_ok('Communication established!', title='Success')
@@ -438,114 +446,155 @@ def main(dictionary):
                             pass
                     elif event == 'HOME':
                         print('Pressed button HOME')
-                        ser.write(stringFormatter(dictionary,'HOME').encode())
+                        codeToSend = dictionary['hexCodes']['HOME'].split(" ")
+                        print(codeToSend[3])
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'SOURCE':
                         print('Pressed button SOURCE')
-                        ser.write(stringFormatter(dictionary,'SOURCE').encode())
+                        codeToSend = dictionary['hexCodes']['SOURCE'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'MUTE':
                         print('Pressed button MUTE')
-                        ser.write(stringFormatter(dictionary,'MUTE').encode())
+                        codeToSend = dictionary['hexCodes']['MUTE'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'SPACE':
                         print('Pressed button SPACE')
-                        ser.write(stringFormatter(dictionary,'SPACE').encode())
+                        codeToSend = dictionary['hexCodes']['SPACE'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '1':
                         print('Pressed button 1')
-                        ser.write(stringFormatter(dictionary,'1').encode())
+                        codeToSend = dictionary['hexCodes']['1'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '2':
                         print('Pressed button 2')
-                        ser.write(stringFormatter(dictionary,'2').encode())
+                        codeToSend = dictionary['hexCodes']['2'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '3':
                         print('Pressed button 3')
-                        ser.write(stringFormatter(dictionary,'3').encode())
+                        codeToSend = dictionary['hexCodes']['3'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '4':
                         print('Pressed button 4')
-                        ser.write(stringFormatter(dictionary,'4').encode())
+                        codeToSend = dictionary['hexCodes']['4'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '5':
                         print('Pressed button 5')
-                        ser.write(stringFormatter(dictionary,'5').encode())
+                        codeToSend = dictionary['hexCodes']['5'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '6':
                         print('Pressed button 6')
-                        ser.write(stringFormatter(dictionary,'6').encode())
+                        codeToSend = dictionary['hexCodes']['6'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '7':
                         print('Pressed button 7')
-                        ser.write(stringFormatter(dictionary,'7').encode())
+                        codeToSend = dictionary['hexCodes']['7'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '8':
                         print('Pressed button 8')
-                        ser.write(stringFormatter(dictionary,'8').encode())
+                        codeToSend = dictionary['hexCodes']['8'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '9':
                         print('Pressed button 9')
-                        ser.write(stringFormatter(dictionary,'9').encode())
+                        codeToSend = dictionary['hexCodes']['9'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == '0':
                         print('Pressed button 0')
-                        ser.write(stringFormatter(dictionary,'0').encode())
+                        codeToSend = dictionary['hexCodes']['0'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'VOLUP':
                         print('Pressed button VOLUME UP')
-                        ser.write(stringFormatter(dictionary,'+').encode())
+                        codeToSend = dictionary['hexCodes']['+'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'VOLDOWN':
                         print('Pressed button VOLUME DOWN')
-                        ser.write(stringFormatter(dictionary,'-').encode())
+                        codeToSend = dictionary['hexCodes']['-'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'DEL':
                         print('Pressed button DEL')
-                        ser.write(stringFormatter(dictionary,'DEL').encode())
+                        codeToSend = dictionary['hexCodes']['DEL'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'SEARCH':
                         print('Pressed button SEARCH')
-                        ser.write(stringFormatter(dictionary,'SEARCH').encode())
+                        codeToSend = dictionary['hexCodes']['SEARCH'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'CHUP':
                         print('Pressed button CHANNEL UP')
-                        ser.write(stringFormatter(dictionary,'CHANNEL_UP').encode())
+                        codeToSend = dictionary['hexCodes']['CHANNEL_UP'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'CHDOWN':
                         print('Pressed button CHANNEL DOWN')
-                        ser.write(stringFormatter(dictionary,'CHANNEL_DOWN').encode())
+                        codeToSend = dictionary['hexCodes']['CHANNEL_DOWN'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'RETURN':
                         print('Pressed button RETURN')
-                        ser.write(stringFormatter(dictionary,'RETURN').encode())
+                        codeToSend = dictionary['hexCodes']['RETURN'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'EXIT':
                         print('Pressed button EXIT')
-                        ser.write(stringFormatter(dictionary,'EXIT').encode())
+                        codeToSend = dictionary['hexCodes']['EXIT'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'ENTER':
                         print('Pressed button ENTER')
-                        ser.write(stringFormatter(dictionary,'ENTER').encode())
+                        codeToSend = dictionary['hexCodes']['ENTER'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'UP':
                         print('Pressed button UP')
-                        ser.write(stringFormatter(dictionary,'UP').encode())
+                        codeToSend = dictionary['hexCodes']['UP'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'LEFT':
                         print('Pressed button LEFT')
-                        ser.write(stringFormatter(dictionary,'LEFT').encode())
+                        codeToSend = dictionary['hexCodes']['LEFT'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'OK':
                         print('Pressed button OK')
-                        ser.write(stringFormatter(dictionary,'OK_INFO').encode())
+                        codeToSend = dictionary['hexCodes']['OK'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'RIGHT':
                         print('Pressed button RIGHT')
-                        ser.write(stringFormatter(dictionary,'RIGHT').encode())
+                        codeToSend = dictionary['hexCodes']['RIGHT'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'DOWN':
                         print('Pressed button DOWN')
-                        ser.write(stringFormatter(dictionary,'DOWN').encode())
+                        codeToSend = dictionary['hexCodes']['DOWN'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'RED':
                         print('Pressed button RED')
-                        ser.write(stringFormatter(dictionary,'RED').encode())
+                        codeToSend = dictionary['hexCodes']['RED'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'GREEN':
                         print('Pressed button GREEN')
-                        ser.write(stringFormatter(dictionary,'GREEN').encode())
+                        codeToSend = dictionary['hexCodes']['GREEN'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'YELLOW':
                         print('Pressed button YELLOW')
-                        ser.write(stringFormatter(dictionary,'YELLOW').encode())
+                        codeToSend = dictionary['hexCodes']['YELLOW'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'BLUE':
                         print('Pressed button BLUE')
-                        ser.write(stringFormatter(dictionary,'BLUE').encode())
+                        codeToSend = dictionary['hexCodes']['BLUE'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'LANGUAGE':
                         print('Pressed button LANGUAGE')
-                        ser.write(stringFormatter(dictionary,'LANGUAGE').encode())
+                        codeToSend = dictionary['hexCodes']['LANGUAGE'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'HOME':
                         print('Pressed button HOME')
-                        ser.write(stringFormatter(dictionary,'HOME').encode())
+                        codeToSend = dictionary['hexCodes']['HOME'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'INFO':
                         print('Pressed button INFO')
-                        ser.write(stringFormatter(dictionary,'INFO').encode())
+                        codeToSend = dictionary['hexCodes']['INFO'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
+                    elif event == 'MENU':
+                        print('Pressed button MENU')
+                        codeToSend = dictionary['hexCodes']['MENU'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                     elif event == 'EMPTY':
                         print('Pressed button EMPTY')
                     else:
                         print('Pressed button ON/OFF')
-                        ser.write(stringFormatter(dictionary,'ON_OFF').encode())
+                        codeToSend = dictionary['hexCodes']['ON_OFF'].split(" ")
+                        ser.write(serial.to_bytes([int(codeToSend[0], base=16), int(codeToSend[1], base=16), int(codeToSend[2], base=16), int(codeToSend[3], base=16), int(codeToSend[4], base=16)]))
                 else:
                     sg.popup_ok('Disconnected!', title='Erro')
             except:
@@ -563,7 +612,7 @@ try:
     print('Arquivo lido')
 except:
     print('Arquivo não lido')
-    dictionary = {'config': {'COM': 'COM 7', 'baudrate': 9600}, 'hexCodes': {'ON_OFF': '0xA1 0xF1 0x00 0xFF 0x1C', 'MUTE': '0xA1 0xF1 0x00 0xFF 0x08', 'HOME': '0xA1 0xF1 0x00 0xFF 0x08', 'MENU': '0xA1 0xF1 0x00 0xFF 0x49', 'Back': '0xA1 0xF1 0x00 0xFF 0x17', 'UP': '0xA1 0xF1 0x00 0xFF 0x1A', 'DOWN': '0xA1 0xF1 0x00 0xFF 0x48', 'RIGHT': '0xA1 0xF1 0x00 0xFF 0x07', 'LEFT': '0xA1 0xF1 0x00 0xFF 0x47', 'OK_INFO': '0xA1 0xF1 0x00 0xFF 0x06', 'ENTER': '0xA1 0xF1 0x00 0xFF 0x03', 'DEL': '0xA1 0xF1 0x00 0xFF 0x42', 'VOl_UP': '0xA1 0xF1 0x00 0xFF 0x4B', 'VOL_DOWN': '0xA1 0xF1 0x00 0xFF 0x4F', 'CHANNEL_UP': '0xA1 0xF1 0x00 0xFF 0x09', 'CHANNEL_DOWN': '0xA1 0xF1 0x00 0xFF 0x05', 1: '0xA1 0xF1 0x00 0xFF 0x54', 2: '0xA1 0xF1 0x00 0xFF 0x16', 3: '0xA1 0xF1 0x00 0xFF 0x15', 
+    dictionary = {'config': {'COM': 'COM7', 'baudrate': 9600}, 'hexCodes': {'ON_OFF': '0xA1 0xF1 0x00 0xFF 0x1C', 'MUTE': '0xA1 0xF1 0x00 0xFF 0x08', 'HOME': '0xA1 0xF1 0x00 0xFF 0x18', 'MENU': '0xA1 0xF1 0x00 0xFF 0x49', 'Back': '0xA1 0xF1 0x00 0xFF 0x17', 'UP': '0xA1 0xF1 0x00 0xFF 0x1A', 'DOWN': '0xA1 0xF1 0x00 0xFF 0x48', 'RIGHT': '0xA1 0xF1 0x00 0xFF 0x07', 'LEFT': '0xA1 0xF1 0x00 0xFF 0x47', 'OK': '0xA1 0xF1 0x00 0xFF 0x18', 'ENTER': '0xA1 0xF1 0x00 0xFF 0x03', 'DEL': '0xA1 0xF1 0x00 0xFF 0x42', 'VOl_UP': '0xA1 0xF1 0x00 0xFF 0x4B', 'VOL_DOWN': '0xA1 0xF1 0x00 0xFF 0x4F', 'CHANNEL_UP': '0xA1 0xF1 0x00 0xFF 0x09', 'CHANNEL_DOWN': '0xA1 0xF1 0x00 0xFF 0x05', 1: '0xA1 0xF1 0x00 0xFF 0x54', 2: '0xA1 0xF1 0x00 0xFF 0x16', 3: '0xA1 0xF1 0x00 0xFF 0x15', 
     4: '0xA1 0xF1 0x00 0xFF 0x50', 5: '0xA1 0xF1 0x00 0xFF 0x12', 6: '0xA1 0xF1 0x00 0xFF 0x11', 7: '0xA1 0xF1 0x00 0xFF 0x4C', 8: '0xA1 0xF1 0x00 0xFF 0x0E', 9: '0xA1 0xF1 0x00 0xFF 0x0D', 0: '0xA1 0xF1 0x00 0xFF 0x0C', 'RED': '0xA1 0xF1 0x00 0xFF 0x01', 
     'GREEN': '0xA1 0xF1 0x00 0xFF 0x5F', 'BLUE': '0xA1 0xF1 0x00 0xFF 0x19', 'YELLOW': '0xA1 0xF1 0x00 0xFF 0x58', 'SPACE': '0xA1 0xF1 0x00 0xFF 0x10', 'INFO': '0xA1 0xF1 0x00 0xFF 0x06', 'LANGUAGE': '0xA1 0xF1 0x00 0xFF 0x41', 'SEARCH': '0xA1 0xF1 0x00 0xFF 0x0A'}}
     f = open('defaultControl.yaml', "w")
